@@ -22,7 +22,7 @@ app.use(async(ctx) => {
     });
 
     if (result) {
-      return ctx.redirect(result.redirectTarget);
+      return ctx.redirect(`${/(http(s?))\:\/\//i.test(result.redirectTarget) ? '' : 'http://'}${result.redirectTarget}`);
     } else {
       ctx.body = {
         status: 404,
