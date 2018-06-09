@@ -31,20 +31,58 @@ app.use(async(ctx) => {
     }
   } else if (method === 'POST' && token === 'new') {
     const redirectTarget = ctx.request.body.redirectTarget;
+    const redirectToken = ctx.request.body.redirectToken;
 
     if (redirectTarget) {
-      const result = await db.shorturl.create({
-        redirectTarget
-      });
+      try {
+        if (redirectToken) {
+          const [result, created] = await db.shorturl.findOrCreate({
+            where: {
+              redirectToken
+            },
+            defaults: {
+              redirectTarget,
+              redirectToken
+            }
+          });
 
-      ctx.body = {
-        status: 200,
-        message: 'OK',
-        data: {
-          redirectTarget,
-          redirectToken: result.redirectToken
+          if (created) {
+            ctx.body = {
+              status: 200,
+              message: 'OK',
+              data: {
+                redirectTarget,
+                redirectToken: result.redirectToken
+              }
+            };
+          } else {
+            ctx.body = {
+              status: 400,
+              message: 'Bad Request',
+              error: 'Token already exists'
+            };
+          }
+        } else {
+          const result = await db.shorturl.create({
+            redirectTarget
+          });
+
+          ctx.body = {
+            status: 200,
+            message: 'OK',
+            data: {
+              redirectTarget,
+              redirectToken: result.redirectToken
+            }
+          };
         }
-      };
+      } catch (e) {
+        ctx.body = {
+          status: 400,
+          message: 'Bad Request',
+          error: 'Database query failed'
+        };
+      }
     } else {
       ctx.body = {
         status: 400,
