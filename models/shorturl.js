@@ -13,9 +13,6 @@ module.exports = (sequelize, DataTypes) => {
     redirectTarget: {
       type: DataTypes.STRING
     }
-  }, {
-    charset: 'utf8',
-    collate: 'utf8_bin'
   });
 
   SequelizeTokenify.tokenify(shorturl, {
