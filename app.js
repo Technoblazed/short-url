@@ -76,7 +76,7 @@ app.use(async(ctx) => {
       };
     }
   } else {
-    return ctx.redirect('http://mythicleague.com');
+    ctx.body = { status: 404, message: 'Not Found' };
   }
 
   return true;
