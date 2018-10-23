@@ -9,6 +9,10 @@ const app = new Koa();
 app.use(bodyParser());
 app.use(logger());
 
+app.use((ctx) => {
+  ctx.set('Content-Type', 'application/json');
+});
+
 app.use(async(ctx) => {
   const { method, url } = ctx.request;
   const { redirectTarget, redirectToken } = ctx.request.body;
