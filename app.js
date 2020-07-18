@@ -23,6 +23,7 @@ app.use(async(ctx) => {
       return ctx.redirect(`${/(http(s?)):\/\//i.test(result.redirectTarget) ? '' : 'http://'}${result.redirectTarget}`);
     }
 
+    ctx.status = 404;
     ctx.body = { status: 404, message: 'Not Found' };
   } else if (method === 'POST' && token === 'new') {
     if (redirectTarget) {
@@ -52,9 +53,11 @@ app.use(async(ctx) => {
           };
         }
       } catch (e) {
+        ctx.status = 400;
         ctx.body = { status: 400, message: 'Bad Request', error: 'Database query failed' };
       }
     } else {
+      ctx.status = 400;
       ctx.body = { status: 400, message: 'Bad Request', error: 'No redirectTarget specified' };
     }
   } else if (method === 'POST' && token === 'clear') {
@@ -65,12 +68,15 @@ app.use(async(ctx) => {
         if (affectedRows) {
           ctx.body = { status: 200, message: 'OK', data: { redirectToken } };
         } else {
+          ctx.status = 400;
           ctx.body = { status: 400, message: 'Bad Request', error: 'Token does not exist' };
         }
       } else {
+        ctx.status = 400;
         ctx.body = { status: 400, message: 'Bad Request', error: 'No redirectToken specified' };
       }
     } catch (e) {
+      ctx.status = 400;
       ctx.body = {
         status: 400,
         message: 'Bad Request',
@@ -78,6 +84,7 @@ app.use(async(ctx) => {
       };
     }
   } else {
+    ctx.status = 404;
     ctx.body = { status: 404, message: 'Not Found' };
   }
 
