@@ -41,6 +41,7 @@ app.use(async(ctx) => {
               data: { redirectTarget, redirectToken: result.redirectToken }
             };
           } else {
+            ctx.status = 400;
             ctx.body = { status: 400, message: 'Bad Request', error: 'Token already exists' };
           }
         } else {
